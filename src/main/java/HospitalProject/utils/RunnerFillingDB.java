@@ -2,6 +2,7 @@ package HospitalProject.utils;
 
 
 import HospitalProject.service.GroupIncidenceService;
+import HospitalProject.service.HealthStaffService;
 import HospitalProject.service.InformService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
@@ -25,10 +26,20 @@ public class RunnerFillingDB implements ApplicationRunner {
     GroupIncidenceService groupIncidenceService;
 
 
+    @Autowired
+    HealthStaffService healthStaffService;
+
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        //informService.populate();
+        System.out.println("Se lanza la aplicación");
+
+
+        healthStaffService.createNewFakeHealthStaffList();
+
+        System.out.println("Ha creado la lista de HealthStaff");
+
+
         groupIncidenceService.populate();
     }
 
