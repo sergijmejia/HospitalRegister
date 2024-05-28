@@ -47,20 +47,22 @@ public class GroupIncidenceService {
             groupIncidence.setId(uniqueID);
 
             //groupIncidence.setGroupDirector(faker.book().author());
-            groupIncidence.setGroupDirector(healthStaffService.getRandomEntity());
+            //groupIncidence.setGroupDirector(healthStaffService.getRandomEntity());
+            /*
             String[] healthStaffNames = new String[3];
             for(int j=0; j<3; j++){
                 healthStaffNames[j] = faker.esports().player();
             }
-            groupIncidence.setGroupIncidence(healthStaffNames);
+            */
+            //groupIncidence.setGroupIncidence(healthStaffNames);
 
-            /*
+
             groupIncidence.setGroupIncidenceList(healthStaffService.fakeHealthStaffList());
             Random random = new Random();
             int randomStaff = random.nextInt(groupIncidence.getGroupIncidenceList().size());
             HealthStaff groupDirector = groupIncidence.getGroupIncidenceList().get(randomStaff);
             groupIncidence.setGroupDirector(groupDirector);
-            */
+
 
             groupIncidence.setIncidenceType(groupIncidenceNames[i]);
             informs = informService.createNewFakeInforms(groupIncidence);
@@ -68,7 +70,7 @@ public class GroupIncidenceService {
             groupIncidenceRepository.save(
                     new GroupIncidence (groupIncidence.getId(),
                             groupIncidence.getGroupDirector(),
-                            groupIncidence.getGroupIncidence(),
+                            groupIncidence.getGroupIncidenceList(),
                             groupIncidence.getIncidenceType(),
                             informs)
             );

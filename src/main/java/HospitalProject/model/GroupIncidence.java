@@ -1,5 +1,7 @@
 package HospitalProject.model;
 
+
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,17 +20,21 @@ public class GroupIncidence {
     @Id
     private String id;
     //private String groupDirector;
-    private HealthStaff groupDirector;
-    private String[] groupIncidence = new String[3];
+    //private HealthStaff groupDirector;
+    //private String[] groupIncidence = new String[3];
 
-    /*
+
+    //@OneToOne(mappedBy = "groupIncidence", cascade = CascadeType.ALL)
     private HealthStaff groupDirector;
+
+
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "HEALTHSTAFF_FK_GROUPINCIDENCE",
             joinColumns = @JoinColumn(name = "HEALTHSTAFF_FK"),
             inverseJoinColumns = @JoinColumn(name = "GROUPINCIDENCE"))
     private List<HealthStaff> groupIncidenceList = new ArrayList<>();
-    */
+
 
     private String incidenceType;
 
