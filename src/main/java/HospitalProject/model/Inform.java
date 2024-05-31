@@ -23,4 +23,5 @@ public class Inform {
     @JoinColumn(name="GROUP_INCIDENCE")
     private GroupIncidence groupIncidence;
 
+
 }

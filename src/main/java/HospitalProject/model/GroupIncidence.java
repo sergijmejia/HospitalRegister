@@ -1,15 +1,13 @@
 package HospitalProject.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+
+
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
@@ -17,10 +15,25 @@ import java.util.List;
 @Entity
 public class GroupIncidence {
 
+    @Id
     private String id;
     private String groupDirector;
-    private String[] groupIncidence = new String[3];
-    @Id
+    //private HealthStaff groupDirector;
+    //private String[] groupIncidence = new String[3];
+
+
+    //@OneToOne(mappedBy = "groupIncidence", cascade = CascadeType.ALL)
+    //private HealthStaff groupDirector;
+
+
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "GROUPINCIDENCE_HEALTHSTAFF_FK",
+            joinColumns = @JoinColumn(name = "GROUPINCIDENCE"),
+            inverseJoinColumns = @JoinColumn(name = "HEALTHSTAFF_FK"))
+    private List<HealthStaff> groupIncidenceList = new ArrayList<>();
+
+
     private String incidenceType;
 
     @OneToMany(mappedBy = "groupIncidence", cascade = CascadeType.ALL)
@@ -29,6 +42,23 @@ public class GroupIncidence {
     public void addInform(Inform inform){
         this.getInforms().add(inform);
         inform.setGroupIncidence(this);
+    }
+
+    /*
+    public void addHealthStaff(HealthStaff healthStaff){
+        this.getGroupIncidenceList().add(healthStaff);
+    }
+
+    public HealthStaff getRandomEntity(List<HealthStaff> healthStaffList) {
+        Random random = new Random();
+        int randomStaff = random.nextInt(healthStaffList.size());
+
+        return healthStaffList.get(randomStaff);
+    }
+    */
+
+    public void addHealthStaff(HealthStaff healthStaff){
+        this.getGroupIncidenceList().add(healthStaff);
     }
 
 }
