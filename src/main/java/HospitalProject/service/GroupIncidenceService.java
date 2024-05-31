@@ -57,7 +57,7 @@ public class GroupIncidenceService {
 
             System.out.println("Asigna la ID");
 
-            groupIncidence.setGroupDirector(faker.book().author());
+            //groupIncidence.setGroupDirector(faker.book().author());
             //groupIncidence.setGroupDirector(healthStaffService.getRandomEntity());
             /*
             String[] healthStaffNames = new String[3];
@@ -68,7 +68,7 @@ public class GroupIncidenceService {
             //groupIncidence.setGroupIncidence(healthStaffNames);
 
 
-            System.out.println("Crea el Group Director");
+
 
 
             groupIncidence.setGroupIncidenceList(healthStaffList);
@@ -152,6 +152,8 @@ public class GroupIncidenceService {
         for (GroupIncidence gi : groupIncidents) {
             List<HealthStaff> healthStaffList = healthStaffService.fakeHealthStaffList(); // Generar una nueva lista aquí
             gi.setGroupIncidenceList(healthStaffList); // Asegurarse de establecer la nueva lista en el grupo de incidencias
+            gi.setGroupDirector();
+            System.out.println("Setea el Group Director");
             groupIncidenceRepository.save(gi);
         }
     }

@@ -57,6 +57,13 @@ public class GroupIncidence {
     }
     */
 
+    public void setGroupDirector(){
+        Random random = new Random();
+        int randomStaff = random.nextInt(groupIncidenceList.size());
+        HealthStaff director = groupIncidenceList.get(randomStaff);
+        groupDirector = director.getName();
+    }
+
     public void addHealthStaff(HealthStaff healthStaff){
         this.getGroupIncidenceList().add(healthStaff);
     }

@@ -52,8 +52,8 @@ public class GroupIncidenceRestController {
             if (groupIncidence.getGroupDirector() != null) {
                 groupIncidenceToUpdate.setGroupDirector(groupIncidence.getGroupDirector());
             }
-            if (groupIncidence.getGroupIncidence() != null) {
-                groupIncidenceToUpdate.setGroupIncidence(groupIncidence.getGroupIncidence());
+            if (groupIncidence.getGroupIncidenceList() != null) {
+                groupIncidenceToUpdate.setGroupIncidenceList(groupIncidence.getGroupIncidenceList());
             }
 
             GroupIncidence groupIncidenceUpdated = groupIncidenceRepository.save(groupIncidenceToUpdate);
