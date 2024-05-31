@@ -32,12 +32,8 @@ public class RunnerFillingDB implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
-        System.out.println("Se lanza la aplicación");
-
 
         healthStaffService.createNewFakeHealthStaffList();
-
-        System.out.println("Ha creado la lista de HealthStaff");
 
 
         groupIncidenceService.populate();

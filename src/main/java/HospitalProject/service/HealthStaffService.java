@@ -3,6 +3,7 @@ package HospitalProject.service;
 import HospitalProject.model.HealthStaff;
 import HospitalProject.repository.HealthStaffRepository;
 import com.github.javafaker.Faker;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,21 +38,24 @@ public class HealthStaffService {
 
     }
 
+    @Transactional
     //PROVISIONAL
     public List<HealthStaff> fakeHealthStaffList(){
-        Faker faker = new Faker(new Locale("en-GB"));
+        //Faker faker = new Faker(new Locale("en-GB"));
         List<HealthStaff> healthStaffList = new ArrayList<>();
-        HealthStaff newHealthStaff;
+        HealthStaff newHealthStaff = null;
 
         for(int i=0; i<4; i++){
             boolean repeatedHealthStaff = true;
             while (repeatedHealthStaff){
                 newHealthStaff = getRandomEntity();
                 if(!healthStaffList.contains(newHealthStaff)){
+                    healthStaffList.add(newHealthStaff);
                     break;
+                } else{
+                    System.out.println("ha localizado uno igual");
                 }
             }
-            healthStaffList.add(new HealthStaff());
         }
 
         return healthStaffList;

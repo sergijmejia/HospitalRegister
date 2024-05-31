@@ -7,9 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
@@ -19,20 +17,20 @@ public class GroupIncidence {
 
     @Id
     private String id;
-    //private String groupDirector;
+    private String groupDirector;
     //private HealthStaff groupDirector;
     //private String[] groupIncidence = new String[3];
 
 
     //@OneToOne(mappedBy = "groupIncidence", cascade = CascadeType.ALL)
-    private HealthStaff groupDirector;
+    //private HealthStaff groupDirector;
 
 
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(name = "HEALTHSTAFF_FK_GROUPINCIDENCE",
-            joinColumns = @JoinColumn(name = "HEALTHSTAFF_FK"),
-            inverseJoinColumns = @JoinColumn(name = "GROUPINCIDENCE"))
+    @JoinTable(name = "GROUPINCIDENCE_HEALTHSTAFF_FK",
+            joinColumns = @JoinColumn(name = "GROUPINCIDENCE"),
+            inverseJoinColumns = @JoinColumn(name = "HEALTHSTAFF_FK"))
     private List<HealthStaff> groupIncidenceList = new ArrayList<>();
 
 
@@ -58,5 +56,9 @@ public class GroupIncidence {
         return healthStaffList.get(randomStaff);
     }
     */
+
+    public void addHealthStaff(HealthStaff healthStaff){
+        this.getGroupIncidenceList().add(healthStaff);
+    }
 
 }
