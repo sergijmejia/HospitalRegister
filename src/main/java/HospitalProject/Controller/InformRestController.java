@@ -1,6 +1,8 @@
 package HospitalProject.Controller;
 
+import HospitalProject.DTO.InformDTO;
 import HospitalProject.repository.InformRepository;
+import HospitalProject.service.InformDTOService;
 import HospitalProject.service.InformService;
 import HospitalProject.model.Inform;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,17 +23,40 @@ public class InformRestController {
     @Autowired
     InformRepository informRepository;
 
+    @Autowired
+    InformDTOService informDTOService;
+
     //CRUD: create
     @PostMapping(path="create", consumes = "application/JSON")
-    public Inform createInform(@RequestBody Inform inform){
-        return informRepository.save(inform);
+    public Inform createInform(@RequestBody InformDTO informDTO){
+        Inform newInform = informService.newFakeInform(informDTO);
+        return informRepository.save(newInform);
     }
 
     //CRUD: read
-    @RequestMapping("/informs")
-    public Iterable<Inform> getAllInforms(){
+    @RequestMapping("/list_informs")
+    public Iterable<InformDTO> getAllInforms(){
+        return informDTOService.getAllInforms();
+    }
 
-        return informRepository.findAll();
+    @RequestMapping("/read_inform/{id}")
+    public ResponseEntity<InformDTO> readInform(@PathVariable String id){
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("operation", "readInform");
+        headers.add("version", "api 1.0");
+
+        Optional<Inform> informFound = informRepository.findInformById(id);
+
+        //If id is not found we will return 404 (not found) status code
+        if(informFound.isPresent()){
+            Inform inform = informFound.get();
+            InformDTO informDTO = informDTOService.convertToDTO(inform);
+            return ResponseEntity.accepted().headers(headers).body(informDTO);
+        } else{
+            return ResponseEntity.notFound().headers(headers).build();
+        }
+
     }
 
     //CRUD: update
@@ -78,8 +103,8 @@ public class InformRestController {
     }
 
     //CRUD: delete
-    @DeleteMapping("/delete")
-    public ResponseEntity<Inform> deleteInform(@RequestParam String id){
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Inform> deleteInform(@PathVariable String id){
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("operation", "deleteInform");

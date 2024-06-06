@@ -1,6 +1,8 @@
 package HospitalProject.service;
 
+import HospitalProject.DTO.InformDTO;
 import HospitalProject.model.GroupIncidence;
+import HospitalProject.repository.GroupIncidenceRepository;
 import com.github.javafaker.Faker;
 import HospitalProject.model.Inform;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +18,28 @@ public class InformService {
     @Autowired
     InformRepository informRepository;
 
-    public Iterable<Inform> getAllInforms(){
+    @Autowired
+    GroupIncidenceRepository groupIncidenceRepository;
 
-        return informRepository.findAll();
-
+    private Inform convertToInform(InformDTO informDTO){
+        Inform newInform = new Inform();
+        if(informDTO.getId().isEmpty()){
+            String uniqueID;
+            uniqueID = UUID.randomUUID().toString();
+            newInform.setId(uniqueID);
+        } else{
+            newInform.setId(informDTO.getId());
+        }
+        newInform.setInform(informDTO.getInform());
+        newInform.setGravityOfIncidence(informDTO.getGravityOfIncidence());
+        newInform.setComplete(informDTO.isComplete());
+        if(newInform.isComplete()){
+            Date date = new Date();
+            newInform.setDateCompleted(date.toString());
+        } else{
+            newInform.setDateCompleted(null);
+        }
+        return newInform;
     }
 
     public List<Inform> createNewFakeInforms(GroupIncidence groupIncidence) {
@@ -47,6 +67,16 @@ public class InformService {
         }
 
         return informs;
+    }
+
+    public Inform newFakeInform(InformDTO newInformDTO) {
+        Optional<GroupIncidence> groupNewInform = groupIncidenceRepository.findGroupIncidenceById(newInformDTO.getIdGroupIncidence());
+        Inform inform = convertToInform(newInformDTO);
+        groupNewInform.ifPresentOrElse(
+                inform::setGroupIncidence,
+                () -> inform.setGroupIncidence(null)
+        );
+        return inform;
     }
 
     /*
