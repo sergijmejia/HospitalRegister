@@ -23,5 +23,14 @@ public class Inform {
     @JoinColumn(name="GROUP_INCIDENCE")
     private GroupIncidence groupIncidence;
 
-
+    public void emptyInform(){
+        this.id = "";
+        this.inform = "";
+        this.gravityOfIncidence = 0;
+        this.complete = false;
+        this.dateCompleted = null;
+        this.groupIncidence = new GroupIncidence();
+    }
 }
+
+

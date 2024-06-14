@@ -18,14 +18,6 @@ public class GroupIncidence {
     @Id
     private String id;
     private String groupDirector;
-    //private HealthStaff groupDirector;
-    //private String[] groupIncidence = new String[3];
-
-
-    //@OneToOne(mappedBy = "groupIncidence", cascade = CascadeType.ALL)
-    //private HealthStaff groupDirector;
-
-
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "GROUPINCIDENCE_HEALTHSTAFF_FK",
@@ -66,6 +58,14 @@ public class GroupIncidence {
 
     public void addHealthStaff(HealthStaff healthStaff){
         this.getGroupIncidenceList().add(healthStaff);
+    }
+
+    public GroupIncidence (String errorMessage) {
+        this.id = "error";
+        this.incidenceType = errorMessage;
+        this.groupDirector = null;
+        this.groupIncidenceList = null;
+        this.informs = null;
     }
 
 }

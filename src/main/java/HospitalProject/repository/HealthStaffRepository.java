@@ -10,4 +10,6 @@ public interface HealthStaffRepository extends CrudRepository<HealthStaff, Strin
 
     Optional<HealthStaff> findHealthStaffById(String id);
 
+    Optional<HealthStaff> findHealthStaffByName(String name);
+
 }

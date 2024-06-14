@@ -1,13 +1,18 @@
 package HospitalProject.service;
 
+import HospitalProject.DTO.GroupIncidenceDTO;
+import HospitalProject.DTO.InformDTO;
 import HospitalProject.model.GroupIncidence;
 import HospitalProject.model.HealthStaff;
 import HospitalProject.model.Inform;
 import HospitalProject.repository.GroupIncidenceRepository;
 import HospitalProject.repository.HealthStaffRepository;
+import HospitalProject.repository.InformRepository;
 import com.github.javafaker.Faker;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -27,6 +32,9 @@ public class GroupIncidenceService {
 
     @Autowired
     HealthStaffRepository healthStaffRepository;
+
+    @Autowired
+    InformRepository informRepository;
 
     @Transactional
     public List<GroupIncidence> createGroups() {
@@ -48,14 +56,10 @@ public class GroupIncidenceService {
 
         for(int i=0; i<8; i++){
 
-            System.out.println("Entra en el bucle");
-
 
             uniqueID = UUID.randomUUID().toString();
             GroupIncidence groupIncidence = new GroupIncidence();
             groupIncidence.setId(uniqueID);
-
-            System.out.println("Asigna la ID");
 
             //groupIncidence.setGroupDirector(faker.book().author());
             //groupIncidence.setGroupDirector(healthStaffService.getRandomEntity());
@@ -70,10 +74,7 @@ public class GroupIncidenceService {
 
 
 
-
             groupIncidence.setGroupIncidenceList(healthStaffList);
-
-            System.out.println("Setea el groupIncidence - vacio");
 
             //System.out.println("Crea el fakeHealthStaffList");
 
@@ -86,8 +87,6 @@ public class GroupIncidenceService {
 
 
             groupIncidence.setIncidenceType(groupIncidenceNames[i]);
-
-            System.out.println("Setea el incidenceType");
 
             informs = informService.createNewFakeInforms(groupIncidence);
 
@@ -109,13 +108,9 @@ public class GroupIncidenceService {
 
             groupIncidence.setInforms(informs);
 
-            System.out.println("Setea los informes");
-
             //assert false;
 
             groupIncidentsList.add(groupIncidence);
-
-            System.out.println("Adjunta el nuevo groupIncidence a groupIncidentsSet");
 
         }
 
@@ -147,15 +142,80 @@ public class GroupIncidenceService {
 
         List<GroupIncidence> groupIncidents = createGroups();
 
-        System.out.println("Crea groupIncidents");
-
         for (GroupIncidence gi : groupIncidents) {
             List<HealthStaff> healthStaffList = healthStaffService.fakeHealthStaffList(); // Generar una nueva lista aquí
             gi.setGroupIncidenceList(healthStaffList); // Asegurarse de establecer la nueva lista en el grupo de incidencias
             gi.setGroupDirector();
-            System.out.println("Setea el Group Director");
             groupIncidenceRepository.save(gi);
         }
+    }
+
+
+    public GroupIncidence convertToGroupIncidence(GroupIncidenceDTO groupIncidenceDTO) {
+        GroupIncidence newGroupIncidence = new GroupIncidence();
+
+        if(groupIncidenceDTO.getId().isEmpty()){
+            String uniqueID;
+            uniqueID = UUID.randomUUID().toString();
+            newGroupIncidence.setId(uniqueID);
+        } else{
+            newGroupIncidence.setId(groupIncidenceDTO.getId());
+        }
+
+        newGroupIncidence.setIncidenceType(groupIncidenceDTO.getIncidenceType());
+
+        List<HealthStaff> listHealthStaff = new ArrayList<>();
+        for(String idHealthStaff : groupIncidenceDTO.getIdsMedicalStaff()){
+            Optional<HealthStaff> optionalHealthStaff = healthStaffRepository.findById(idHealthStaff);
+            if(optionalHealthStaff.isPresent()){
+                listHealthStaff.add(optionalHealthStaff.get());
+            } else{
+                return new GroupIncidence("Medical staff with id " + idHealthStaff + " not found");
+            }
+        }
+
+        newGroupIncidence.setGroupIncidenceList(listHealthStaff);
+
+        if(!groupIncidenceDTO.getIdDirector().isEmpty()){
+            //HealthStaff[] directorGroupStaff = new HealthStaff[1];
+            Optional<HealthStaff> optionalDirector = healthStaffRepository.findById(groupIncidenceDTO.getIdDirector());
+            if(optionalDirector.isPresent()){
+                HealthStaff groupDirector = optionalDirector.get();
+                boolean directorInHealthStaff = false;
+
+                for(HealthStaff healthStaff : listHealthStaff){
+                    if(groupDirector.equals(healthStaff)){
+                        newGroupIncidence.setGroupDirector(groupDirector.getName());
+                        directorInHealthStaff = true;
+                        break;
+                    }
+                }
+                if(!directorInHealthStaff){
+                    return new GroupIncidence("Group Director with id " +
+                            groupIncidenceDTO.getIdDirector() + " not found in medical staff incidence group");
+                }
+            } else{
+                return new GroupIncidence("Group Director with id " +
+                        groupIncidenceDTO.getIdDirector() + " not found in medical staff DB");
+            }
+        }
+
+        return newGroupIncidence;
+
+    }
+
+    private GroupIncidence createNewGroupIncidence(GroupIncidenceDTO groupIncidenceDTO) {
+
+        GroupIncidence newGroupIncidence = new GroupIncidence();
+        GroupIncidenceDTO groupIncidenceDTOToCreate = new GroupIncidenceDTO();
+
+        String uniqueID;
+        uniqueID = UUID.randomUUID().toString();
+        groupIncidenceDTOToCreate.setId(uniqueID);
+
+        newGroupIncidence = convertToGroupIncidence(groupIncidenceDTOToCreate);
+
+        return newGroupIncidence;
     }
 
 }
